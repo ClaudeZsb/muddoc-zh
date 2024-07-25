@@ -2,7 +2,7 @@
 
 # -- Project information
 
-project = 'Muddoc'
+project = 'Muddoc-zh'
 copyright = '2024, Sanbao'
 author = 'Sanbao'
 
