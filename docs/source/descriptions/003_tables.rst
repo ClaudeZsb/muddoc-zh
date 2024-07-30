@@ -52,7 +52,8 @@
   .. important::
 
     每张表除主键字段外，最多拥有 **28** 个字段，其中至多 **5** 个 :ref:`引用类型 <field-supported-types>` 字段。
-    在编写定义时，引用类型字段必须放在最后。
+
+    **在编写定义时，引用类型字段必须放在最后。**
 
 - ``key``: ``string[]`` ，表的主键，可以是一个或多个字段的数组。也可以是一个空数组，意味着这是一个单例表。
 
@@ -66,7 +67,7 @@
 - ``codegen``: ``object`` （可选），3。
 
   - ``outputDirectory``: ``string``，默认: ``"tables"`` 。代码生成的输出目录，
-    默认放在配置文件目录下的 ``src/tables`` 。
+    默认放在配置文件目录下的 ``src/codegen/tables`` 。
   - ``tableIdArgument``: ``boolean``，默认: ``false`` 。是否为读写方法生成 ``tableId`` 参数。
   - ``storeArgument``: ``boolean``，默认: ``false`` 。是否为读写方法生成 ``store`` 参数。
 
@@ -91,11 +92,12 @@
 +==============+===========================================================+
 || 数值类型    || ``uint8`` ~ ``uint256``, ``int8`` ~ ``int256``,          |
 ||             || ``address``, ``bool``, ``bytes1`` ~ ``bytes32``          |
-||             || ``enum``                                                 |
 +--------------+-----------------------------------------------------------+
 | 引用类型     | 数值类型构成的定长数组或动态数组， ``string`` , ``bytes`` |
 +--------------+-----------------------------------------------------------+
-| 自定义类型   | 数值类型 / 引用类型别名                                   |
+| 枚举         | ✅                                                        |
++--------------+-----------------------------------------------------------+
+| 自定义类型   | ✅                                                        |
 +--------------+-----------------------------------------------------------+
 | ``mapping``  | ❌                                                        |
 +--------------+-----------------------------------------------------------+
@@ -119,6 +121,86 @@
   两个字段类型分别是 ``uint256`` , ``string`` 或 ``bytes``, 并将 ``uint256`` 字段设为主键， 意为数组的索引。
 
   每一个单例表中的唯一一行都可以看作一个类型为 ``struct`` 的数据。
+
+枚举
+""""""""""""
+
+在配置文件中我们可以定义枚举，并在表的字段中使用定义的枚举。
+
+.. code-block:: ts
+
+  import { defineWorld } from "@latticexyz/world";
+
+  export default defineWorld({
+    namespace: "muddoc",
+    enums: {
+      UserStatus: ["active", "inactive"],
+    },
+    tables: {
+      UserStates: {
+        schema: {
+          addr: "address",
+          status: "UserStatus",
+        },
+        key: ["addr"],
+      },
+    }
+  });
+
+每一个 ``enums`` 中的键值对都将定义一个枚举。
+键值对的键确定了枚举的名称，值是一个包含所有枚举成员名称的字符串数组。
+
+所有枚举类型由 ``CLI: mud tablegen`` 统一生成和存放于 ``src/common.sol``。
+
+自定义类型
+""""""""""""
+
+在配置文件中我们可以通过文件路径引入自定义类型，并在表的字段中使用这些引入的自定义类型。
+
+自定义类型需要事先准备， ``CLI: mud tablegen`` 根据配置文件中的引入路径自动为表代码库生成对应的引入。
+
+这些自定义类型既可以来自本项目也可以来自于三方库。
+
+.. code-block:: ts
+
+  import { defineWorld } from "@latticexyz/world";
+
+  export default defineWorld({
+    namespace: "muddoc",
+    userTypes: {
+      MyUint256: {
+        type: "uint256",
+        filePath: "./src/utils/MyUint256s.sol",
+      },
+      ShortString: {
+        type: "bytes32",
+        filePath: "@openzeppelin/contracts/utils/ShortStrings.sol",
+      }
+    },
+    tables: {
+      UserStates: {
+        schema: {
+          addr: "address",
+          data: "MyUint256",
+          label: "ShortString",
+        },
+        key: ["addr"],
+      },
+    }
+  });
+
+``./src/utils/MyUint256s.sol`` 是对于配置文件而言的相对路径，其内容大致如下。
+
+.. code-block:: solidity
+
+  // SPDX-License-Identifier: MIT
+  pragma solidity >=0.8.24;
+
+  type MyUint256 is uint256;
+
+  library MyUint256s {
+    // MyUint256 utils
+  }
 
 表定义的简写
 ^^^^^^^^^^^^^^^^^^^^^^
