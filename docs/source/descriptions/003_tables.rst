@@ -5,7 +5,7 @@
 
 **通过配置文件来定义和创建表，通过自动生成的表代码库来操作表。**
 
-表的定义
+定义一个表
 ----------
 
 这是一份简单的配置文件，定义了一个名为 ``Users`` 的表，它有三个字段 ``addr`` 、 ``data`` 和 ``description`` ，
@@ -57,7 +57,7 @@
 
 - ``type``: ``string`` （可选），表的类型。``table`` （默认值，存储在链上的表） 或
   ``offchainTable`` （表的数据只能通过 ``event`` 在链下获取）.
-- ``codegen``: ``object`` （可选），3。
+- ``codegen``: ``object`` （可选）。
 
   - ``outputDirectory``: ``string``，默认: ``"tables"`` 。代码生成的输出目录，
     默认放在配置文件目录下的 ``src/codegen/tables`` 。
@@ -73,6 +73,9 @@
 
   - ``dataStruct``: ``boolean``，当存在超过一个不是主键组成部分的字段时，默认为 ``true`` 。
     是否为表的非主键字段生成数据结构，默认 ``struct <表名>Data`` 。
+- ``deploy``: ``object`` （可选）。
+
+  - ``disabled``: ``boolean``，默认: ``false`` 。是否创建该表。
 
 
 .. _field-supported-types:
@@ -252,7 +255,7 @@
 表的使用
 ----------
 
-表的主要操作包括创建、读取、更新和删除。
+表的主要操作包括创建（注册）、读取、更新和删除。
 所有的操作依赖于 ``CLI: mud tablegen`` 根据表的定义所生成的代码库。
 每张表的代码库都是一个单独的 ``solidity library``，并以表名命名，它包含 ``tableId``，表结构和 CRUD 方法，
 

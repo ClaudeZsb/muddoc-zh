@@ -37,9 +37,9 @@
 
 .. code-block::
 
-  ==> call, --> delegatecall
+  --> call, ==> delegatecall
 
-  EOA/Contracts ==> World --> ERC20System
+  EOA/Contracts --> World ==> ERC20System
 
 1. 将 ``World`` 作为代币的地址，意味着所有 IERC20 方法的交互入口。
 2. 为 ``World`` 添加 ``IERC20.transfer`` 方法的后备 ``fallback``。
