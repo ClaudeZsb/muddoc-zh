@@ -1,8 +1,8 @@
 系统
 =======
 
-**系统是以合约形式部署的链上公共代码库。正常情况下，它不持有任何资产，不具备任何状态存储，并且能够被
-任何人使用。**
+**自主世界的功能主要由系统来表达。系统是以合约形式部署的链上公共代码库。
+正常情况下，它不持有任何资产，不具备任何状态存储，并且能够被所有自主世界共享。**
 
 开发一个系统
 --------------
@@ -399,3 +399,15 @@
 .. code-block:: solidity
 
   uint256 res = IWorld(worldAddress).muddoc__getUint();
+
+核心系统
+--------------
+
+todo
+
+- ``AccessManagementSystem``
+- ``BalanceTransferSystem``
+- ``BatchCallSystem``
+- ``ModuleInstallationSystem``
+- ``StoreRegistrationSystem``
+- ``WorldRegistrationSystem``
