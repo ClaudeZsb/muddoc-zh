@@ -29,7 +29,7 @@ Contents
    descriptions/*
 
 .. toctree::
-   :caption: Internals
+   :caption: 内部说明
    :glob:
 
    internals/*
@@ -39,3 +39,9 @@ Contents
    :glob:
 
    cli/*
+
+.. toctree::
+   :caption: 附录
+   :glob:
+
+   appendix/*
